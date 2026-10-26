@@ -1,5 +1,6 @@
 import { createClient } from "genlayer-js";
 import { studionet } from "genlayer-js/chains";
+import { ensureStudionet, type WalletProvider } from "./wallet";
 import {
   TransactionHashVariant,
   TransactionStatus,
@@ -9,9 +10,7 @@ import {
   type CalldataEncodable,
   type TransactionHash,
 } from "genlayer-js/types";
-export type WalletProvider = NonNullable<
-  NonNullable<Parameters<typeof createClient>[0]>["provider"]
->;
+export type { WalletProvider } from "./wallet";
 export const address =
   process.env.NEXT_PUBLIC_GENLAYER_CONTRACT_ADDRESS?.trim();
 export const network = process.env.NEXT_PUBLIC_GENLAYER_NETWORK || "studionet";
@@ -124,8 +123,14 @@ export async function submit(
   functionName: string,
   args: CalldataEncodable[],
 ) {
+  await ensureStudionet(provider);
+  const accounts = await provider.request({ method: "eth_accounts" });
+  if (
+    !Array.isArray(accounts) ||
+    String(accounts[0]).toLowerCase() !== account.toLowerCase()
+  )
+    throw new Error("Wallet account changed. Reconnect before signing.");
   const client = createClient({ chain: studionet, account, provider });
-  await client.connect("studionet");
   const hash: unknown = await client.writeContract({
     address: contractAddress(),
     functionName,

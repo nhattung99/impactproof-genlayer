@@ -2,6 +2,12 @@
 
 ## Published deployment verification
 
+### Wallet compatibility regression
+
+The installed `genlayer-js@1.1.8` convenience `connect()` method unconditionally calls MetaMask-specific `wallet_getSnaps`. A standard EVM provider without that handler failed before transaction submission. Both application call sites now use `lib/genlayer/wallet.ts` to check/switch studionet with standard wallet RPCs and add the network only for explicit error 4902. Network settings still come from the SDK's studionet preset, and the official SDK still handles contract writes. Account identity is rechecked before submission.
+
+The regression suite now has 32 passing frontend tests. Added cases cover a provider with no Snap handlers, existing/unknown networks, wrapped 4902 errors, rejected switching, ineffective switching, SDK write dispatch without SDK `connect()`, and account changes. These tests mock wallet/RPC boundaries and do not claim a real signed transaction passed.
+
 The owner supplied the stable studionet address `0xCea7D28DB1FBBAC0797C0F3c1B7b4c5f614EAD6e`. The read-only `scripts/verify-deployment.mjs` check confirmed matching source (normalized line endings), ten matching public method signatures, finalized `impactproof/1`, and an empty first page of projects. No wallet-signed write was performed by the coding agent.
 
 The configured production build, 24 frontend tests, and ESLint passed again before publication. Vercel completed its production build successfully. Public `curl -I https://impactproof-genlayer.vercel.app` returned `200 OK`; the first 4,000 HTML characters contain `ImpactProof` and `<div id="root">`. GitHub repository: https://github.com/nhattung99/impactproof-genlayer (public).

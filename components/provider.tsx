@@ -21,6 +21,7 @@ import {
   type WalletProvider,
 } from "@/lib/genlayer/client";
 import type { TxState } from "@/types/impact";
+import { ensureStudionet } from "@/lib/genlayer/wallet";
 type Context = {
   account?: `0x${string}`;
   wrongNetwork: boolean;
@@ -190,21 +191,19 @@ export function ImpactProvider({ children }: { children: ReactNode }) {
       const accounts = await p.request({ method: "eth_requestAccounts" });
       if (!Array.isArray(accounts) || typeof accounts[0] !== "string")
         throw new Error("No wallet account returned");
-      setAccount(accounts[0] as `0x${string}`);
       const chain = await p.request({ method: "eth_chainId" });
       setWrong(Number(chain) !== studionet.id);
-      if (Number(chain) !== studionet.id) {
-        const { createClient } = await import("genlayer-js");
-        await createClient({
-          chain: studionet,
-          provider: p,
-          account: accounts[0] as `0x${string}`,
-        }).connect("studionet");
-        setWrong(
-          Number(await p.request({ method: "eth_chainId" })) !== studionet.id,
-        );
-      }
+      await ensureStudionet(p);
+      setWrong(false);
+      const currentAccounts = await p.request({ method: "eth_accounts" });
+      if (
+        !Array.isArray(currentAccounts) ||
+        typeof currentAccounts[0] !== "string"
+      )
+        throw new Error("No wallet account returned");
+      setAccount(currentAccounts[0] as `0x${string}`);
     } catch (e) {
+      setAccount(undefined);
       setWalletError(errorMessage(e));
     } finally {
       setConnecting(false);
