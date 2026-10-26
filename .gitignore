@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.env*
+!.env.example
+__pycache__/
+*.pyc
+playwright-report/
+test-results/
+.venv/
+coverage/
+.pytest_cache/
+artifacts/
+*.tsbuildinfo
+.vercel/
+docs/references/*.txt
