@@ -1,5 +1,13 @@
 # Validation record and test guide
 
+## Published deployment verification
+
+The owner supplied the stable studionet address `0xCea7D28DB1FBBAC0797C0F3c1B7b4c5f614EAD6e`. The read-only `scripts/verify-deployment.mjs` check confirmed matching source (normalized line endings), ten matching public method signatures, finalized `impactproof/1`, and an empty first page of projects. No wallet-signed write was performed by the coding agent.
+
+The configured production build, 24 frontend tests, and ESLint passed again before publication. Vercel completed its production build successfully. Public `curl -I https://impactproof-genlayer.vercel.app` returned `200 OK`; the first 4,000 HTML characters contain `ImpactProof` and `<div id="root">`. GitHub repository: https://github.com/nhattung99/impactproof-genlayer (public).
+
+The live explorer was also checked in the browser: it displays **Studionet contract verified**, reads the empty finalized registry, and offers project registration without simulated records. The earlier test record below describes predeployment validation; its real-wallet and multi-validator testing limits still apply.
+
 Validated locally on 26 October 2026. No deployment or network write was performed.
 
 | Check                                                                            | Result                                           | Scope                                                                                                                  |

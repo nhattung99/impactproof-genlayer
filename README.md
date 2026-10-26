@@ -10,7 +10,9 @@ The owner has deployed the Intelligent Contract on stable GenLayer studionet. Re
 
 ## Live App
 
-Production deployment is being prepared. A URL will be added only after its HTTP response and rendered application have been verified.
+[https://impactproof-genlayer.vercel.app](https://impactproof-genlayer.vercel.app)
+
+Production HTTP verification returned **200 OK**. The first 4,000 HTML characters contain the ImpactProof title and the React application root. Vercel is connected to the public [GitHub repository](https://github.com/nhattung99/impactproof-genlayer); pushes to `main` trigger deployment.
 
 ## Deployed Contract
 

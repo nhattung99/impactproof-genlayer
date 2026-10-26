@@ -26,9 +26,9 @@ The Intelligent Contract retrieves public reports and performs subjective assess
 
 ## Submission fields still required
 
-- Public repository URL: **not published**.
-- Deployed frontend URL: **not deployed**.
-- Actual contract address: **awaiting owner manual deployment**.
+- Public repository URL: https://github.com/nhattung99/impactproof-genlayer
+- Deployed frontend URL: https://impactproof-genlayer.vercel.app
+- Actual contract address: `0xCea7D28DB1FBBAC0797C0F3c1B7b4c5f614EAD6e` (stable studionet, source/interface/finalized-read verification passed).
 - Deployment and workflow transaction references: **not available yet**.
 - End-to-end demonstration recording: **not recorded**.
 

@@ -13,3 +13,6 @@ artifacts/
 *.tsbuildinfo
 .vercel/
 docs/references/*.txt
+
+.vercel
+.env*
