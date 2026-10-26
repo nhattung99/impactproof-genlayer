@@ -18,6 +18,7 @@ import {
   submit,
   reader,
   classifyReceipt,
+  receiptFailureMessage,
   type WalletProvider,
 } from "@/lib/genlayer/client";
 import type { TxState } from "@/types/impact";
@@ -126,7 +127,7 @@ export function ImpactProvider({ children }: { children: ReactNode }) {
               status === "finalized"
                 ? "Transaction finalized with successful execution."
                 : status === "failed"
-                  ? "Transaction failed or was canceled. No approval recorded."
+                  ? receiptFailureMessage(receipt)
                   : "Waiting for persisted GenLayer consensus and finality…",
           });
           if (status === "failed" || status === "finalized") {
@@ -163,18 +164,19 @@ export function ImpactProvider({ children }: { children: ReactNode }) {
           /^0x[0-9a-fA-F]{64}$/.test(parsed.hash) &&
           parsed.contract === address
         )
-          queueMicrotask(() =>
-            setTx({
+          queueMicrotask(() => {
+            const restored: TxState = {
               ...parsed,
-              status:
-                parsed.status === "finalized" || parsed.status === "failed"
-                  ? parsed.status
-                  : "monitoring_paused",
-            }),
-          );
+              status: "consensus",
+              message:
+                "Rechecking the saved transaction against on-chain state…",
+            };
+            setTx(restored);
+            void monitor(restored);
+          });
       }
     } catch {}
-  }, []);
+  }, [monitor]);
   useEffect(() => {
     if (tx.hash)
       localStorage.setItem(`impactproof:tx:${address}`, JSON.stringify(tx));

@@ -32,7 +32,7 @@ describe("truthful transaction state", () => {
       }),
     ).toBe("failed");
     expect(classifyReceipt({ statusName: TransactionStatus.FINALIZED })).toBe(
-      "failed",
+      "consensus",
     );
   });
   it("handles wallet rejection", () =>

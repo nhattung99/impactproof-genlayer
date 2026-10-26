@@ -2,6 +2,12 @@
 
 ## Published deployment verification
 
+### Studio receipt schema regression
+
+Transaction `0x5f40c79862cf174e4087bf1e4cbdde313b4c8d2c9bb5815ac49296a463069b9e` finalized successfully and returned project ID `2`. The UI incorrectly treated the missing optional flat `txExecutionResultName` field as failure. Stable Studio reports success in its current leader receipt (`consensus_data.leader_receipt`, `mode: leader`, `execution_result: SUCCESS`). The decoder now supports both schemas and requires finality plus explicit execution evidence. Missing evidence remains unresolved, not failed. Validator cancellation after quorum does not determine leader success.
+
+Saved transactions, including previously misclassified failures, are rechecked against the chain on page load. Regression coverage includes a minimal sanitized receipt from the reported transaction and recovery from a stale local failure. The repaired decoder was also run directly against the real RPC response and returned `finalized`. This transaction is an actual successful project registration, not a completed milestone-verification workflow.
+
 ### Wallet compatibility regression
 
 The installed `genlayer-js@1.1.8` convenience `connect()` method unconditionally calls MetaMask-specific `wallet_getSnaps`. A standard EVM provider without that handler failed before transaction submission. Both application call sites now use `lib/genlayer/wallet.ts` to check/switch studionet with standard wallet RPCs and add the network only for explicit error 4902. Network settings still come from the SDK's studionet preset, and the official SDK still handles contract writes. Account identity is rechecked before submission.

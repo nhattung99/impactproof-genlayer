@@ -3,9 +3,6 @@ import { studionet } from "genlayer-js/chains";
 import { ensureStudionet, type WalletProvider } from "./wallet";
 import {
   TransactionHashVariant,
-  TransactionStatus,
-  ExecutionResult,
-  type GenLayerTransaction,
   type ContractSchema,
   type CalldataEncodable,
   type TransactionHash,
@@ -96,20 +93,7 @@ export async function read<T>(
   if (typeof raw !== "string") throw new Error("Unexpected contract response");
   return JSON.parse(raw) as T;
 }
-export function classifyReceipt(
-  tx: GenLayerTransaction,
-): "failed" | "finalized" | "pending" | "consensus" {
-  if (
-    tx.statusName === TransactionStatus.CANCELED ||
-    tx.txExecutionResultName === ExecutionResult.FINISHED_WITH_ERROR
-  )
-    return "failed";
-  if (tx.statusName === TransactionStatus.FINALIZED)
-    return tx.txExecutionResultName === ExecutionResult.FINISHED_WITH_RETURN
-      ? "finalized"
-      : "failed";
-  return tx.statusName === TransactionStatus.PENDING ? "pending" : "consensus";
-}
+export { classifyReceipt, receiptFailureMessage } from "./receipt";
 export function errorMessage(error: unknown) {
   const e = error as { code?: number; message?: string };
   return e?.code === 4001
